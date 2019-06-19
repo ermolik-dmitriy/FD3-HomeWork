@@ -1,0 +1,8 @@
+*{
+    box-sizing: border-box;
+}
+#container {
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+}

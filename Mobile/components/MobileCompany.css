@@ -1,0 +1,10 @@
+﻿input[type='button']{
+  font-size: 15px;
+  padding: 10px;
+}
+.mobileCompanyName{
+  font-size: 20px;
+}
+#container{
+  display: flex;
+}

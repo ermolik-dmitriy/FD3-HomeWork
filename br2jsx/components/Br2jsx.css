@@ -1,0 +1,10 @@
+#container{
+    display: flex;
+}
+.br2jsx{
+    font-size: 30px;
+    font-weight: bold;
+    color: white;
+    background-color: aqua;
+    padding: 20px; 
+}

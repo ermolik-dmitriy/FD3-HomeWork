@@ -1,0 +1,53 @@
+.tableProd{
+    border-collapse: collapse;
+}
+.tableProd--caption{
+    font-size: 30px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.tableProd--head {
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.tableBody--row .tableRow--cell{
+    font-size: 20px;
+    text-transform: lowercase;
+}
+.tableRow--cell{
+    border: solid 2px gray;
+    padding: 10px;
+}
+button{
+    font-size: 20px;
+}.cardProduct{
+    font-size: 20px;
+}
+.headCard{
+    font-weight: bold;
+    font-size: 30px;
+}.cardProductEdit{
+    font-size: 20px;
+}
+.cardProductEdit h1{
+    font-size: 30px;
+}
+.rowProductEdit{
+    display: block;
+}
+.rowProductEdit input{
+    font-size: 15px;
+}
+.buttonSaveEdit{
+    font-size: 17px;
+    margin-top: 10px
+}
+.buttonCancelEdit{
+    font-size: 17px;
+    margin-top: 10px
+}
+.rowProductEdit span{
+    padding-left: 10px;
+}
+/*# sourceMappingURL=bundle.css.map*/

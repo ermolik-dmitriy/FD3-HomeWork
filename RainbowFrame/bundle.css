@@ -1,0 +1,9 @@
+*{
+    box-sizing: border-box;
+}
+#container {
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+}
+/*# sourceMappingURL=bundle.css.map*/

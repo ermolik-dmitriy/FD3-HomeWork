@@ -1,0 +1,11 @@
+.tableBody--row .tableRow--cell{
+    font-size: 20px;
+    text-transform: lowercase;
+}
+.tableRow--cell{
+    border: solid 2px gray;
+    padding: 10px;
+}
+button{
+    font-size: 20px;
+}

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>filter</title>
+</head>
+<body>
+    <div id="container"></div>
+
+    <script src="https://unpkg.com/react@15/dist/react.js"></script> 
+    <script src="https://unpkg.com/react-dom@15/dist/react-dom.js"></script> 
+    
+    <script src="script.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+
+    <script>
+
+        var arrayRows=[
+            'переосвидетельствоваться',
+            'субстанционализироваться', 
+            'интернационализироваться',
+            'одиннадцатиклассница', 
+            'делопроизводительница',
+            'человеконенавистничество',
+            'высокопревосходительство',
+            ];
+
+        ReactDOM.render(
+            React.createElement(Filter,{arrayRows:arrayRows}), 
+            document.getElementById('container') 
+        );
+
+    </script>
+</body>
+</html>

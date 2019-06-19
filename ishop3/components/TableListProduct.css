@@ -1,0 +1,13 @@
+.tableProd{
+    border-collapse: collapse;
+}
+.tableProd--caption{
+    font-size: 30px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.tableProd--head {
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+}

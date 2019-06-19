@@ -1,0 +1,23 @@
+.cardProductEdit{
+    font-size: 20px;
+}
+.cardProductEdit h1{
+    font-size: 30px;
+}
+.rowProductEdit{
+    display: block;
+}
+.rowProductEdit input{
+    font-size: 15px;
+}
+.buttonSaveEdit{
+    font-size: 17px;
+    margin-top: 10px
+}
+.buttonCancelEdit{
+    font-size: 17px;
+    margin-top: 10px
+}
+.rowProductEdit span{
+    padding-left: 10px;
+}

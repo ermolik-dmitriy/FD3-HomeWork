@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>ishop</title>
+</head>
+<body>
+    <div id="container"></div>
+
+    <script src="https://unpkg.com/react@15/dist/react.js"></script> 
+    <script src="https://unpkg.com/react-dom@15/dist/react-dom.js"></script> 
+    
+    <script src="TableListProduct.js"></script>
+    <link rel="stylesheet" type="text/css" href="TableListProduct.css" />
+
+    <script>
+
+        var nameShop ='shop1';
+
+        var listProduct=[ 
+            {nameProd:'phone', costProd:'1500', urlProd:"http://phone.com", countProd:111, code:1}, 
+            {nameProd:'laptop', costProd:'3000', urlProd:"http://laptop.com", countProd:7, code:2}, 
+            {nameProd:'player', costProd:'500', urlProd:"http://player.com", countProd:25, code:3}, 
+            {nameProd:'tab', costProd:'2000', urlProd:"http://tab.com", countProd:5, code:4}, 
+            {nameProd:'monitor', costProd:'1500', urlProd:"http://monitor.com", countProd:86, code:5}
+        ];
+
+        ReactDOM.render(
+            React.createElement(TableListProduct,{name:nameShop,products:listProduct}), 
+            document.getElementById('container') 
+        );
+
+
+    </script>
+</body>
+</html>

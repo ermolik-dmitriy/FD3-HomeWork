@@ -1,0 +1,21 @@
+.tableProd{
+    border-collapse: collapse;
+}
+.tableProd--caption{
+    font-size: 30px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.tableRow--cell{
+    border: solid 2px gray;
+    padding: 10px;
+}
+.tableProd--head {
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.tableBody--row .tableRow--cell{
+    font-size: 20px;
+    text-transform: lowercase;
+}
