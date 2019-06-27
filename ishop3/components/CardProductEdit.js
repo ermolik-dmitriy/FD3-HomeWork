@@ -13,8 +13,9 @@ class CardProductEdit extends React.Component{
         cbCancelEditCard: PropTypes.func.isRequired,
         cbCancelAddCard: PropTypes.func.isRequired,
         cbAddEditCard: PropTypes.func.isRequired,
+        cbEditDisabled: PropTypes.func.isRequired,
         workModeEditCard : PropTypes.number.isRequired,
-        maxId : PropTypes.number.isRequired,
+        buttonEditDisabled: PropTypes.number.isRequired,
     };
 
     state = {
@@ -27,15 +28,7 @@ class CardProductEdit extends React.Component{
         costError : '',
         urlError : '',
         countError : '',
-    };
-    
-    componentWillMount = () => {
-        if ( this.props.workModeEditCard==2 ) 
-            this.setState({nameProd : '', costProd : '' , urlProd : '', countProd : '', code : (this.props.maxId+1), selectedItemId: 0, isDelete: 0})   
-    };
-
-    componentWillReceiveProps = (newProps) => { 
-        this.setState( {nameProd: newProps.selectedRow.nameProd, costProd : newProps.selectedRow.costProd, urlProd : newProps.selectedRow.urlProd, countProd : newProps.selectedRow.countProd,} )
+        idError : '',
     };
 
     saveEditCard = () => {
@@ -43,8 +36,7 @@ class CardProductEdit extends React.Component{
     }
 
     addEditCard = () => {
-    
-        this.props.cbAddEditCard({nameProd : this.state.nameProd, costProd : this.state.costProd , urlProd : this.state.urlProd, countProd : this.state.countProd, code : (this.props.maxId+1), selectedItemId: 0, isDelete: 0});
+        this.props.cbAddEditCard({nameProd : this.state.nameProd, costProd : this.state.costProd , urlProd : this.state.urlProd, countProd : this.state.countProd, code : this.state.code});
     }
 
     cancelEditCard = () => {
@@ -92,22 +84,30 @@ class CardProductEdit extends React.Component{
                     this.setState( {countError: ''} )
                 break;
             }
+            case 'idProd': {
+                if(!EO.target.value)
+                    this.setState( {idError: 'Введите стоимость!'} )
+                else if(!isFinite(EO.target.value))
+                    this.setState( {idError: 'Введите cтоимость числом!'} )
+                else 
+                    this.setState( {idError: ''} )
+                break;
+            }
         }
     }
     
     render (){ 
        return <div className='cardProductEdit'>
             <h1 className='productEditHead'>{(this.props.workModeEditCard==1)?'Edit Existing Product':'Add new product'}</h1>
-            <span className='productEditId'>ID:{(this.props.workModeEditCard==1)?this.props.selectedRow.code:(this.props.maxId+1)}</span>
-            <label className='rowProductEdit'>Name: <input name='nameProd' type='text' onBlur={this.validateField} onChange={(EO)=>this.setState( {nameProd: EO.target.value} )} value={this.state.nameProd} /><span style={{color:'red'}}>{this.state.nameError}</span></label>
-            <label className='rowProductEdit'>Price: <input name='priceProd'type='text' onBlur={this.validateField} onChange={(EO)=>this.setState( {costProd: EO.target.value} )} value={this.state.costProd} /><span style={{color:'red'}}>{this.state.costError}</span></label>
-            <label className='rowProductEdit'>URL: <input name='urlProd'type='text' onBlur={this.validateField} onChange={(EO)=>this.setState( {urlProd: EO.target.value} )} value={this.state.urlProd}/><span style={{color:'red'}}>{this.state.urlError}</span></label>
-            <label className='rowProductEdit'>Quantity: <input name='countProd'type='text' onBlur={this.validateField} onChange={(EO)=>this.setState( {countProd: EO.target.value} )} value={this.state.countProd} /><span style={{color:'red'}}>{this.state.countError}</span></label>
-            <input className='buttonSaveEdit' type='button'value={(this.props.workModeEditCard==1)?'Save':'Add'} onClick={(this.props.workModeEditCard==1)?this.saveEditCard:this.addEditCard} disabled={!(!this.state.nameError&&!this.state.costError&&!this.state.urlError&&!this.state.countError)}/>
+            {(this.props.workModeEditCard==2)?<label className='rowProductEdit'>ID:<input name='idProd'type='text' autoFocus={true} onBlur={this.validateField} onChange={(EO)=>{this.setState( {code: EO.target.value} ); this.props.cbEditDisabled()}} value={(this.props.buttonEditDisabled==0)?this.props.selectedRow.code:this.state.code} /><span style={{color:'red'}}>{this.state.idError}</span></label>:<span className='productEditId'>ID:{this.props.selectedRow.code}</span>}
+            <label className='rowProductEdit'>Name: <input name='nameProd' type='text' onBlur={this.validateField} onChange={(EO)=>{this.setState( {nameProd: EO.target.value} ); this.props.cbEditDisabled()}} value={(this.props.buttonEditDisabled==0)?this.props.selectedRow.nameProd:this.state.nameProd} /><span style={{color:'red'}}>{this.state.nameError}</span></label>
+            <label className='rowProductEdit'>Price: <input name='priceProd'type='text' onBlur={this.validateField} onChange={(EO)=>{this.setState( {costProd: EO.target.value} ); this.props.cbEditDisabled()}} value={(this.props.buttonEditDisabled==0)?this.props.selectedRow.costProd:this.state.costProd} /><span style={{color:'red'}}>{this.state.costError}</span></label>
+            <label className='rowProductEdit'>URL: <input name='urlProd'type='text' onBlur={this.validateField} onChange={(EO)=>{this.setState( {urlProd: EO.target.value} ); this.props.cbEditDisabled()}} value={(this.props.buttonEditDisabled==0)?this.props.selectedRow.urlProd:this.state.urlProd}/><span style={{color:'red'}}>{this.state.urlError}</span></label>
+            <label className='rowProductEdit'>Quantity: <input name='countProd'type='text' onBlur={this.validateField} onChange={(EO)=>{this.setState( {countProd: EO.target.value}); this.props.cbEditDisabled()}} value={(this.props.buttonEditDisabled==0)?this.props.selectedRow.countProd:this.state.countProd} /><span style={{color:'red'}}>{this.state.countError}</span></label>
+            <input className='buttonSaveEdit' type='button'value={(this.props.workModeEditCard==1)?'Save':'Add'} onClick={(this.props.workModeEditCard==1)?this.saveEditCard:this.addEditCard} disabled={!(!this.state.idError&&!this.state.nameError&&!this.state.costError&&!this.state.urlError&&!this.state.countError)}/>
             <input className='buttonCancelEdit' type='button'value='Cancel' onClick={(this.props.workModeEditCard==1)?this.cancelEditCard:this.cancelAddCard}/>
        </div>
     };
-  
 }
 
 export default CardProductEdit;

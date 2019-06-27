@@ -8,49 +8,32 @@ var TableListProduct = React.createClass({
     },
 
     getInitialState: function () {
-        var selectedItemId=[];
-        var isDelete=[]
-        this.props.products.forEach((item,i) => 
-            selectedItemId[i]=(item.selectedItemId)
-        );
-        this.props.products.forEach((item,i) => 
-            isDelete[i]=(item.isDelete)
-        );
-        return {
-            selectedItemId,
-            isDelete
-        };
+        return {products: this.props.products, selectedItemId:0,};
     },
 
     rowClick : function (idRow) {
-        var newSelectedItemId=[];
-        this.state.selectedItemId.forEach(function(item,i){
-            if(parseInt(idRow-1)==i)
-                newSelectedItemId.push(1);
-            else
-                newSelectedItemId.push(0);
-        });
-        this.setState( { selectedItemId: newSelectedItemId} );
+        this.setState( { selectedItemId: idRow} );
     },
     
     buttonClick : function (idRow) {
         var isDeleted = confirm('Хотите удалить строку');
-        var newIsDelete=[];
+        var newArrayProducts=this.state.products;
         if(isDeleted){
-            this.state.isDelete.forEach(function(item,i){
-                if(parseInt(idRow-1)==i || item==1)
-                    newIsDelete.push(1);
-                else
-                    newIsDelete.push(0);
+            this.state.products.forEach(function(item,i){
+                if(item.code==idRow){
+                    newArrayProducts=newArrayProducts.slice();
+                    newArrayProducts.splice(i,1);
+                }
+                 
             });
-            this.setState( { isDelete: newIsDelete} );
+            this.setState( { products: newArrayProducts} );
         }
     },
 
     render: function(){
 
-        var productsCode=this.props.products.map( (item,i) => 
-            React.createElement(RowProduct , {isDelete:this.state.isDelete[i], selectedItemId:this.state.selectedItemId[i], idRow:item.code, key:item.code ,cbButtonClick:this.buttonClick, cbRowClick:this.rowClick, nameProd:item.nameProd, costProd:item.costProd, urlProd:item.urlProd, countProd:item.countProd} )
+        var productsCode=this.state.products.map( (item,i) => 
+            React.createElement(RowProduct , {selectedItemId:this.state.selectedItemId, idRow:item.code, key:item.code ,cbButtonClick:this.buttonClick, cbRowClick:this.rowClick, nameProd:item.nameProd, costProd:item.costProd, urlProd:item.urlProd, countProd:item.countProd} )
         );
 
         return React.DOM.table( {className:'tableProd'},

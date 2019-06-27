@@ -16,14 +16,15 @@ class RowProduct extends React.Component{
         cbRowClick: PropTypes.func.isRequired,
         cbButtonClick: PropTypes.func.isRequired,
         cbButtonEditClick: PropTypes.func.isRequired,
-        selectedItemId: PropTypes.number.isRequired,
-        isDelete: PropTypes.number.isRequired,
         idRow: PropTypes.number.isRequired,
         workModeEditCard:PropTypes.number.isRequired,
+        buttonEditDisabled:PropTypes.number.isRequired,
+        selectedItemRow:PropTypes.number.isRequired,
     };
 
     rowClick = () => {
-        this.props.cbRowClick(this.props.idRow);
+        if(this.props.buttonEditDisabled!=1)
+            this.props.cbRowClick(this.props.idRow);
     };
 
     buttonClick = (EO) => {
@@ -37,10 +38,8 @@ class RowProduct extends React.Component{
     }
 
     render (){
-        
         return (
-        (this.props.isDelete==0) &&
-        ((this.props.selectedItemId==0)
+        (this.props.selectedItemRow!=this.props.idRow)
         ?    
         <tr className='tableBody--row'  onClick={(this.props.workModeEditCard!=2)?this.rowClick:null}>
             <td className='tableRow--cell'>{this.props.nameProd}</td>
@@ -48,7 +47,7 @@ class RowProduct extends React.Component{
             <td className='tableRow--cell'>{this.props.urlProd}</td>
             <td className='tableRow--cell'>{this.props.countProd}</td>
             <td className='tableRow--cell'>
-                <button className='button--edit' disabled={(this.props.workModeEditCard==2)?true:false} onClick={this.buttonEditClick}>Edit</button>
+                <button className='button--edit' disabled={(this.props.workModeEditCard==2||this.props.buttonEditDisabled==1)?true:false} onClick={this.buttonEditClick}>Edit</button>
                 <button className='button--delete'  disabled={(this.props.cardMode==2)? true:false} onClick={this.buttonClick}>Delete</button>
             </td>
         </tr> 
@@ -59,13 +58,11 @@ class RowProduct extends React.Component{
             <td className='tableRow--cell'>{this.props.urlProd}</td>
             <td className='tableRow--cell'>{this.props.countProd}</td>
             <td className='tableRow--cell'>
-                <button className='button--edit' onClick={this.buttonEditClick}>Edit</button>
+                <button className='button--edit'  disabled={(this.props.workModeEditCard==2||this.props.buttonEditDisabled==1)?true:false} onClick={this.buttonEditClick}>Edit</button>
                 <button className='button--delete' disabled={(this.props.cardMode==2)? true:false} onClick={this.buttonClick}>Delete</button>
             </td>
-        </tr>));
-             
+        </tr>);   
     };
-
 }
 
 export default RowProduct;

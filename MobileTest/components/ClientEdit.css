@@ -1,0 +1,13 @@
+.clientProductEdit{
+    font-size: 20px
+}
+.clientEditHead{
+    font-size: 25px
+}
+.rowClientEdit{
+    display: block;
+    padding: 5px 0;
+}
+.rowClientEdit input{
+    font-size: 17px;
+}

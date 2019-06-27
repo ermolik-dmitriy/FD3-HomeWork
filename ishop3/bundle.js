@@ -25413,28 +25413,24 @@ var TableListProduct = function (_React$Component) {
             selectedItemRow: 0,
             products: _this.props.products,
             cardMode: 0,
-            workModeEditCard: 1
+            workModeEditCard: 1,
+            buttonEditDisabled: 0
         }, _this.rowClick = function (idRow) {
-            var newState = _this.state.products;
-            newState.forEach(function (item, i) {
-                if (parseInt(idRow - 1) == i) item.selectedItemId = 1;else item.selectedItemId = 0;
-            });
-            _this.setState({ products: newState, cardMode: 1 });
+            _this.setState({ selectedItemRow: idRow, cardMode: 1 });
         }, _this.buttonClick = function (idRow) {
             var isDeleted = confirm('Хотите удалить строку');
-            var newState = _this.state.products;
+            var newArrayProducts = _this.state.products;
             if (isDeleted) {
-                newState.forEach(function (item, i) {
-                    if (parseInt(idRow - 1) == i || item.isDelete == 1) item.isDelete = 1;else item.isDelete = 0;
+                _this.state.products.forEach(function (item, i) {
+                    if (item.code == idRow) {
+                        newArrayProducts = newArrayProducts.slice();
+                        newArrayProducts.splice(i, 1);
+                    }
                 });
-                _this.setState({ products: newState });
+                _this.setState({ products: newArrayProducts });
             }
         }, _this.buttonEditClick = function (idRow) {
-            var newState = _this.state.products;
-            newState.forEach(function (item, i) {
-                if (parseInt(idRow - 1) == i) item.selectedItemId = 1;else item.selectedItemId = 0;
-            });
-            _this.setState({ products: newState, cardMode: 2, workModeEditCard: 1 });
+            _this.setState({ selectedItemRow: idRow, cardMode: 2, workModeEditCard: 1 });
         }, _this.saveEditCard = function (newItemHash) {
             var newState = _this.state.products.map(function (item) {
                 if (item.code == newItemHash.code) {
@@ -25443,21 +25439,19 @@ var TableListProduct = function (_React$Component) {
                     return item;
                 }
             });
-            _this.setState({ products: newState, cardMode: 1 });
+            _this.setState({ products: newState, cardMode: 1, buttonEditDisabled: 0 });
         }, _this.cancelEditCard = function () {
-            _this.setState({ cardMode: 1, workModeEditCard: 1 });
+            _this.setState({ cardMode: 1, workModeEditCard: 1, buttonEditDisabled: 0 });
         }, _this.cancelAddCard = function () {
-            _this.setState({ cardMode: 0, workModeEditCard: 1 });
+            _this.setState({ cardMode: 0, workModeEditCard: 1, buttonEditDisabled: 0 });
         }, _this.addEditCard = function (newProduct) {
             var newState = _this.state.products;
             newState.push(newProduct);
-            _this.setState({ products: newState, cardMode: 0, workModeEditCard: 1 });
+            _this.setState({ products: newState, cardMode: 0, workModeEditCard: 1, buttonEditDisabled: 0 });
         }, _this.changeWorkModeCardEdit = function () {
-            var newState = _this.state.products;
-            newState.forEach(function (item, i) {
-                item.selectedItemId = 0;
-            });
-            _this.setState({ products: newState, workModeEditCard: 2, cardMode: 2 });
+            _this.setState({ selectedItemRow: 0, workModeEditCard: 2, cardMode: 2 });
+        }, _this.editDisabled = function () {
+            _this.setState({ buttonEditDisabled: 1 });
         }, _temp), _possibleConstructorReturn(_this, _ret);
     }
 
@@ -25466,18 +25460,16 @@ var TableListProduct = function (_React$Component) {
         value: function render() {
             var _this2 = this;
 
-            var arrayForId = this.state.products;
-            var maxId = arrayForId.length;
-
             var selectedRow = {};
+
             this.state.products.forEach(function (item, i) {
-                if (item.selectedItemId == 1) {
-                    selectedRow = item;
+                if (item.code == _this2.state.selectedItemRow) {
+                    selectedRow = _this2.state.workModeEditCard != 2 ? item : { nameProd: '', costProd: '', urlProd: '', countProd: '', code: '' };
                 }
             });
 
             var productsCode = this.state.products.map(function (item) {
-                return _react2.default.createElement(_RowProduct2.default, { workModeEditCard: _this2.state.workModeEditCard, cardMode: _this2.state.cardMode, isDelete: item.isDelete, selectedItemId: item.selectedItemId, idRow: item.code, key: item.code, cbButtonEditClick: _this2.buttonEditClick, cbButtonClick: _this2.buttonClick, cbRowClick: _this2.rowClick, nameProd: item.nameProd, costProd: item.costProd, urlProd: item.urlProd, countProd: item.countProd });
+                return _react2.default.createElement(_RowProduct2.default, { selectedItemRow: _this2.state.selectedItemRow, buttonEditDisabled: _this2.state.buttonEditDisabled, workModeEditCard: _this2.state.workModeEditCard, cardMode: _this2.state.cardMode, idRow: item.code, key: item.code, cbButtonEditClick: _this2.buttonEditClick, cbButtonClick: _this2.buttonClick, cbRowClick: _this2.rowClick, nameProd: item.nameProd, costProd: item.costProd, urlProd: item.urlProd, countProd: item.countProd });
             });
 
             return _react2.default.createElement(
@@ -25536,7 +25528,7 @@ var TableListProduct = function (_React$Component) {
                     'New product'
                 ),
                 this.state.cardMode == 1 && _react2.default.createElement(_CardProduct2.default, { selectedRow: selectedRow }),
-                this.state.cardMode == 2 && _react2.default.createElement(_CardProductEdit2.default, { maxId: maxId, workModeEditCard: this.state.workModeEditCard, cbAddEditCard: this.addEditCard, cbCancelAddCard: this.cancelAddCard, cbCancelEditCard: this.cancelEditCard, cbSaveEditCard: this.saveEditCard, selectedRow: selectedRow })
+                this.state.cardMode == 2 && _react2.default.createElement(_CardProductEdit2.default, { buttonEditDisabled: this.state.buttonEditDisabled, cbEditDisabled: this.editDisabled, workModeEditCard: this.state.workModeEditCard, cbAddEditCard: this.addEditCard, cbCancelAddCard: this.cancelAddCard, cbCancelEditCard: this.cancelEditCard, cbSaveEditCard: this.saveEditCard, selectedRow: selectedRow })
             );
         }
     }]);
@@ -26529,7 +26521,7 @@ var RowProduct = function (_React$Component) {
         }
 
         return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = RowProduct.__proto__ || Object.getPrototypeOf(RowProduct)).call.apply(_ref, [this].concat(args))), _this), _this.displayName = 'RowProduct', _this.rowClick = function () {
-            _this.props.cbRowClick(_this.props.idRow);
+            if (_this.props.buttonEditDisabled != 1) _this.props.cbRowClick(_this.props.idRow);
         }, _this.buttonClick = function (EO) {
             EO.stopPropagation();
             _this.props.cbButtonClick(_this.props.idRow);
@@ -26542,8 +26534,7 @@ var RowProduct = function (_React$Component) {
     _createClass(RowProduct, [{
         key: 'render',
         value: function render() {
-
-            return this.props.isDelete == 0 && (this.props.selectedItemId == 0 ? _react2.default.createElement(
+            return this.props.selectedItemRow != this.props.idRow ? _react2.default.createElement(
                 'tr',
                 { className: 'tableBody--row', onClick: this.props.workModeEditCard != 2 ? this.rowClick : null },
                 _react2.default.createElement(
@@ -26571,7 +26562,7 @@ var RowProduct = function (_React$Component) {
                     { className: 'tableRow--cell' },
                     _react2.default.createElement(
                         'button',
-                        { className: 'button--edit', disabled: this.props.workModeEditCard == 2 ? true : false, onClick: this.buttonEditClick },
+                        { className: 'button--edit', disabled: this.props.workModeEditCard == 2 || this.props.buttonEditDisabled == 1 ? true : false, onClick: this.buttonEditClick },
                         'Edit'
                     ),
                     _react2.default.createElement(
@@ -26608,7 +26599,7 @@ var RowProduct = function (_React$Component) {
                     { className: 'tableRow--cell' },
                     _react2.default.createElement(
                         'button',
-                        { className: 'button--edit', onClick: this.buttonEditClick },
+                        { className: 'button--edit', disabled: this.props.workModeEditCard == 2 || this.props.buttonEditDisabled == 1 ? true : false, onClick: this.buttonEditClick },
                         'Edit'
                     ),
                     _react2.default.createElement(
@@ -26617,7 +26608,7 @@ var RowProduct = function (_React$Component) {
                         'Delete'
                     )
                 )
-            ));
+            );
         }
     }]);
 
@@ -26633,10 +26624,10 @@ RowProduct.propTypes = {
     cbRowClick: _propTypes2.default.func.isRequired,
     cbButtonClick: _propTypes2.default.func.isRequired,
     cbButtonEditClick: _propTypes2.default.func.isRequired,
-    selectedItemId: _propTypes2.default.number.isRequired,
-    isDelete: _propTypes2.default.number.isRequired,
     idRow: _propTypes2.default.number.isRequired,
-    workModeEditCard: _propTypes2.default.number.isRequired
+    workModeEditCard: _propTypes2.default.number.isRequired,
+    buttonEditDisabled: _propTypes2.default.number.isRequired,
+    selectedItemRow: _propTypes2.default.number.isRequired
 };
 exports.default = RowProduct;
 
@@ -26791,16 +26782,12 @@ var CardProductEdit = function (_React$Component) {
             nameError: '',
             costError: '',
             urlError: '',
-            countError: ''
-        }, _this.componentWillMount = function () {
-            if (_this.props.workModeEditCard == 2) _this.setState({ nameProd: '', costProd: '', urlProd: '', countProd: '', code: _this.props.maxId + 1, selectedItemId: 0, isDelete: 0 });
-        }, _this.componentWillReceiveProps = function (newProps) {
-            _this.setState({ nameProd: newProps.selectedRow.nameProd, costProd: newProps.selectedRow.costProd, urlProd: newProps.selectedRow.urlProd, countProd: newProps.selectedRow.countProd });
+            countError: '',
+            idError: ''
         }, _this.saveEditCard = function () {
             _this.props.cbSaveEditCard(_extends({}, _this.props.selectedRow, { nameProd: _this.state.nameProd, costProd: _this.state.costProd, urlProd: _this.state.urlProd, countProd: _this.state.countProd }));
         }, _this.addEditCard = function () {
-
-            _this.props.cbAddEditCard({ nameProd: _this.state.nameProd, costProd: _this.state.costProd, urlProd: _this.state.urlProd, countProd: _this.state.countProd, code: _this.props.maxId + 1, selectedItemId: 0, isDelete: 0 });
+            _this.props.cbAddEditCard({ nameProd: _this.state.nameProd, costProd: _this.state.costProd, urlProd: _this.state.urlProd, countProd: _this.state.countProd, code: _this.state.code });
         }, _this.cancelEditCard = function () {
             _this.props.cbCancelEditCard();
         }, _this.cancelAddCard = function () {
@@ -26828,6 +26815,11 @@ var CardProductEdit = function (_React$Component) {
                         if (!EO.target.value) _this.setState({ countError: 'Введите количество товара!' });else if (!isFinite(EO.target.value)) _this.setState({ countError: 'Введите количество числом!' });else _this.setState({ countError: '' });
                         break;
                     }
+                case 'idProd':
+                    {
+                        if (!EO.target.value) _this.setState({ idError: 'Введите стоимость!' });else if (!isFinite(EO.target.value)) _this.setState({ idError: 'Введите cтоимость числом!' });else _this.setState({ idError: '' });
+                        break;
+                    }
             }
         }, _temp), _possibleConstructorReturn(_this, _ret);
     }
@@ -26845,19 +26837,31 @@ var CardProductEdit = function (_React$Component) {
                     { className: 'productEditHead' },
                     this.props.workModeEditCard == 1 ? 'Edit Existing Product' : 'Add new product'
                 ),
-                _react2.default.createElement(
+                this.props.workModeEditCard == 2 ? _react2.default.createElement(
+                    'label',
+                    { className: 'rowProductEdit' },
+                    'ID:',
+                    _react2.default.createElement('input', { name: 'idProd', type: 'text', autoFocus: true, onBlur: this.validateField, onChange: function onChange(EO) {
+                            _this2.setState({ code: EO.target.value });_this2.props.cbEditDisabled();
+                        }, value: this.props.buttonEditDisabled == 0 ? this.props.selectedRow.code : this.state.code }),
+                    _react2.default.createElement(
+                        'span',
+                        { style: { color: 'red' } },
+                        this.state.idError
+                    )
+                ) : _react2.default.createElement(
                     'span',
                     { className: 'productEditId' },
                     'ID:',
-                    this.props.workModeEditCard == 1 ? this.props.selectedRow.code : this.props.maxId + 1
+                    this.props.selectedRow.code
                 ),
                 _react2.default.createElement(
                     'label',
                     { className: 'rowProductEdit' },
                     'Name: ',
                     _react2.default.createElement('input', { name: 'nameProd', type: 'text', onBlur: this.validateField, onChange: function onChange(EO) {
-                            return _this2.setState({ nameProd: EO.target.value });
-                        }, value: this.state.nameProd }),
+                            _this2.setState({ nameProd: EO.target.value });_this2.props.cbEditDisabled();
+                        }, value: this.props.buttonEditDisabled == 0 ? this.props.selectedRow.nameProd : this.state.nameProd }),
                     _react2.default.createElement(
                         'span',
                         { style: { color: 'red' } },
@@ -26869,8 +26873,8 @@ var CardProductEdit = function (_React$Component) {
                     { className: 'rowProductEdit' },
                     'Price: ',
                     _react2.default.createElement('input', { name: 'priceProd', type: 'text', onBlur: this.validateField, onChange: function onChange(EO) {
-                            return _this2.setState({ costProd: EO.target.value });
-                        }, value: this.state.costProd }),
+                            _this2.setState({ costProd: EO.target.value });_this2.props.cbEditDisabled();
+                        }, value: this.props.buttonEditDisabled == 0 ? this.props.selectedRow.costProd : this.state.costProd }),
                     _react2.default.createElement(
                         'span',
                         { style: { color: 'red' } },
@@ -26882,8 +26886,8 @@ var CardProductEdit = function (_React$Component) {
                     { className: 'rowProductEdit' },
                     'URL: ',
                     _react2.default.createElement('input', { name: 'urlProd', type: 'text', onBlur: this.validateField, onChange: function onChange(EO) {
-                            return _this2.setState({ urlProd: EO.target.value });
-                        }, value: this.state.urlProd }),
+                            _this2.setState({ urlProd: EO.target.value });_this2.props.cbEditDisabled();
+                        }, value: this.props.buttonEditDisabled == 0 ? this.props.selectedRow.urlProd : this.state.urlProd }),
                     _react2.default.createElement(
                         'span',
                         { style: { color: 'red' } },
@@ -26895,15 +26899,15 @@ var CardProductEdit = function (_React$Component) {
                     { className: 'rowProductEdit' },
                     'Quantity: ',
                     _react2.default.createElement('input', { name: 'countProd', type: 'text', onBlur: this.validateField, onChange: function onChange(EO) {
-                            return _this2.setState({ countProd: EO.target.value });
-                        }, value: this.state.countProd }),
+                            _this2.setState({ countProd: EO.target.value });_this2.props.cbEditDisabled();
+                        }, value: this.props.buttonEditDisabled == 0 ? this.props.selectedRow.countProd : this.state.countProd }),
                     _react2.default.createElement(
                         'span',
                         { style: { color: 'red' } },
                         this.state.countError
                     )
                 ),
-                _react2.default.createElement('input', { className: 'buttonSaveEdit', type: 'button', value: this.props.workModeEditCard == 1 ? 'Save' : 'Add', onClick: this.props.workModeEditCard == 1 ? this.saveEditCard : this.addEditCard, disabled: !(!this.state.nameError && !this.state.costError && !this.state.urlError && !this.state.countError) }),
+                _react2.default.createElement('input', { className: 'buttonSaveEdit', type: 'button', value: this.props.workModeEditCard == 1 ? 'Save' : 'Add', onClick: this.props.workModeEditCard == 1 ? this.saveEditCard : this.addEditCard, disabled: !(!this.state.idError && !this.state.nameError && !this.state.costError && !this.state.urlError && !this.state.countError) }),
                 _react2.default.createElement('input', { className: 'buttonCancelEdit', type: 'button', value: 'Cancel', onClick: this.props.workModeEditCard == 1 ? this.cancelEditCard : this.cancelAddCard })
             );
         }
@@ -26918,8 +26922,9 @@ CardProductEdit.propTypes = {
     cbCancelEditCard: _propTypes2.default.func.isRequired,
     cbCancelAddCard: _propTypes2.default.func.isRequired,
     cbAddEditCard: _propTypes2.default.func.isRequired,
+    cbEditDisabled: _propTypes2.default.func.isRequired,
     workModeEditCard: _propTypes2.default.number.isRequired,
-    maxId: _propTypes2.default.number.isRequired
+    buttonEditDisabled: _propTypes2.default.number.isRequired
 };
 exports.default = CardProductEdit;
 
@@ -26933,7 +26938,7 @@ exports.default = CardProductEdit;
 /* 32 */
 /***/ (function(module, exports) {
 
-module.exports = [{"nameProd":"phone","costProd":1500,"urlProd":"http://phone.com","countProd":111,"code":1,"selectedItemId":0,"isDelete":0},{"nameProd":"laptop","costProd":3000,"urlProd":"http://laptop.com","countProd":7,"code":2,"selectedItemId":0,"isDelete":0},{"nameProd":"player","costProd":500,"urlProd":"http://player.com","countProd":25,"code":3,"selectedItemId":0,"isDelete":0},{"nameProd":"tab","costProd":2000,"urlProd":"http://tab.com","countProd":5,"code":4,"selectedItemId":0,"isDelete":0},{"nameProd":"monitor","costProd":1500,"urlProd":"http://monitor.com","countProd":86,"code":5,"selectedItemId":0,"isDelete":0}]
+module.exports = [{"nameProd":"phone","costProd":1500,"urlProd":"http://phone.com","countProd":111,"code":1},{"nameProd":"laptop","costProd":3000,"urlProd":"http://laptop.com","countProd":7,"code":2},{"nameProd":"player","costProd":500,"urlProd":"http://player.com","countProd":25,"code":3},{"nameProd":"tab","costProd":2000,"urlProd":"http://tab.com","countProd":5,"code":4},{"nameProd":"monitor","costProd":1500,"urlProd":"http://monitor.com","countProd":86,"code":5}]
 
 /***/ })
 /******/ ]);

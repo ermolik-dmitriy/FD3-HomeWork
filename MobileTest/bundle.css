@@ -1,0 +1,39 @@
+.mobileCompanyClients{
+    border-collapse: collapse;
+    font-size: 20px;
+}
+.mobileCompanyClients button{
+    font-size: 15px;
+    padding: 10px;
+}
+td{
+    border-top: solid lightgrey 1px;
+    padding: 15px;
+}
+.tableHeadRow td{
+    font-weight: bold;
+    padding: 20px 15px;
+}
+  .clientProductEdit{
+    font-size: 20px
+}
+.clientEditHead{
+    font-size: 25px
+}
+.rowClientEdit{
+    display: block;
+    padding: 5px 0;
+}
+.rowClientEdit input{
+    font-size: 17px;
+}input[type='button']{
+  font-size: 15px;
+  padding: 10px;
+}
+.mobileCompanyName{
+  font-size: 20px;
+}
+#container{
+  display: flex;
+}
+/*# sourceMappingURL=bundle.css.map*/

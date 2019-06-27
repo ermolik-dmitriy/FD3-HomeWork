@@ -7,7 +7,6 @@ import RowProduct from './RowProduct';
 import CardProduct from './CardProduct';
 import CardProductEdit from './CardProductEdit';
 
-
 class TableListProduct extends React.Component{
 
     displayName = 'TableListProduct';
@@ -21,43 +20,30 @@ class TableListProduct extends React.Component{
         selectedItemRow : 0,
         products : this.props.products,
         cardMode : 0,
-        workModeEditCard : 1
+        workModeEditCard : 1,
+        buttonEditDisabled: 0
     };
 
     rowClick = (idRow) => {
-        var newState=this.state.products;
-        newState.forEach(function(item,i){
-            if(parseInt(idRow-1)==i)
-                item.selectedItemId=1;
-            else
-                item.selectedItemId=0;
-        });
-        this.setState( { products: newState, cardMode: 1} );
+        this.setState( { selectedItemRow : idRow, cardMode: 1} );
     };
     
     buttonClick = (idRow) =>{
         var isDeleted = confirm('Хотите удалить строку');
-        var newState=this.state.products;
+        var newArrayProducts=this.state.products;
         if(isDeleted){
-            newState.forEach(function(item,i){
-                if(parseInt(idRow-1)==i || item.isDelete==1)
-                    item.isDelete=1;
-                else
-                    item.isDelete=0;
+            this.state.products.forEach(function(item,i){
+                if(item.code==idRow){
+                    newArrayProducts=newArrayProducts.slice();
+                    newArrayProducts.splice(i,1);
+                }
             });
-            this.setState( { products: newState} );
+            this.setState( { products: newArrayProducts} );
         }
     };
 
     buttonEditClick = (idRow) =>{
-        var newState=this.state.products;
-        newState.forEach(function(item,i){
-            if(parseInt(idRow-1)==i)
-                item.selectedItemId=1;
-            else
-                item.selectedItemId=0;
-        });
-        this.setState( { products: newState, cardMode: 2, workModeEditCard : 1} );
+        this.setState( { selectedItemRow : idRow, cardMode: 2, workModeEditCard : 1} );
     };
 
     saveEditCard = (newItemHash) => {
@@ -68,44 +54,42 @@ class TableListProduct extends React.Component{
                 return item
             }
         });
-        this.setState( { products: newState,  cardMode: 1} );
-    }
+        this.setState( { products: newState,  cardMode: 1,buttonEditDisabled : 0} );
+    };
     
     cancelEditCard = () => {
-        this.setState( {cardMode: 1, workModeEditCard : 1} );
-    }
+        this.setState( {cardMode: 1, workModeEditCard : 1,buttonEditDisabled : 0} );
+    };
 
     cancelAddCard = () => {
-        this.setState( {cardMode: 0, workModeEditCard : 1} );
-    }
+        this.setState( {cardMode: 0, workModeEditCard : 1,buttonEditDisabled : 0} );
+    };
 
     addEditCard = (newProduct) => {
        var  newState = this.state.products;
        newState.push(newProduct);
-       this.setState( { products: newState,  cardMode: 0, workModeEditCard : 1} );
-    }
+       this.setState( { products: newState,  cardMode: 0, workModeEditCard : 1,buttonEditDisabled : 0} );
+    };
 
     changeWorkModeCardEdit = ()=> {
-        var  newState = this.state.products;
-        newState.forEach(function(item,i){
-            item.selectedItemId=0;
-        });
-        this.setState( {products: newState, workModeEditCard: 2,cardMode : 2} );
-    }
+        this.setState( {selectedItemRow : 0, workModeEditCard: 2,cardMode : 2} );
+    };
+
+    editDisabled = () => {
+        this.setState({buttonEditDisabled : 1});
+    };
 
     render(){
-        var arrayForId = this.state.products;
-        var maxId = arrayForId.length;
-
         var selectedRow = {};
+
         this.state.products.forEach((item, i) => {
-            if(item.selectedItemId==1){
-                selectedRow=item;
+            if(item.code==this.state.selectedItemRow){
+                selectedRow=(this.state.workModeEditCard!=2)?item:{nameProd:'', costProd :'', urlProd:'', countProd:'', code: ''};
             }
         });
 
         var productsCode=this.state.products.map( (item) => 
-            <RowProduct workModeEditCard={this.state.workModeEditCard} cardMode={this.state.cardMode} isDelete={item.isDelete} selectedItemId={item.selectedItemId} idRow={item.code} key={item.code} cbButtonEditClick={this.buttonEditClick} cbButtonClick={this.buttonClick} cbRowClick={this.rowClick} nameProd={item.nameProd} costProd={item.costProd} urlProd={item.urlProd} countProd={item.countProd} />
+            <RowProduct selectedItemRow={this.state.selectedItemRow} buttonEditDisabled={this.state.buttonEditDisabled} workModeEditCard={this.state.workModeEditCard} cardMode={this.state.cardMode} idRow={item.code} key={item.code} cbButtonEditClick={this.buttonEditClick} cbButtonClick={this.buttonClick} cbRowClick={this.rowClick} nameProd={item.nameProd} costProd={item.costProd} urlProd={item.urlProd} countProd={item.countProd} />
         );
 
         return <div className='main'>
@@ -126,11 +110,9 @@ class TableListProduct extends React.Component{
         </table>
         <button onClick={this.changeWorkModeCardEdit} disabled={(this.state.cardMode==2)? true:false} className='button--new-product'>New product</button>
         {this.state.cardMode==1&&<CardProduct selectedRow={selectedRow}/>}
-        {this.state.cardMode==2&&<CardProductEdit maxId={maxId} workModeEditCard={this.state.workModeEditCard} cbAddEditCard={this.addEditCard} cbCancelAddCard={this.cancelAddCard} cbCancelEditCard={this.cancelEditCard} cbSaveEditCard={this.saveEditCard} selectedRow={selectedRow}/>}
+        {this.state.cardMode==2&&<CardProductEdit buttonEditDisabled={this.state.buttonEditDisabled} cbEditDisabled={this.editDisabled} workModeEditCard={this.state.workModeEditCard} cbAddEditCard={this.addEditCard} cbCancelAddCard={this.cancelAddCard} cbCancelEditCard={this.cancelEditCard} cbSaveEditCard={this.saveEditCard} selectedRow={selectedRow}/>}
         </div>
-        
     };
-
 }
 
 export default TableListProduct;
